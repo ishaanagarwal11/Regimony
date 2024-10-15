@@ -26,12 +26,12 @@
         android:id="@+id/stepCountTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Steps: 0"
+        android:text="Steps"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/dailyPageTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
+ />
 
     <!-- Weight Input -->
     <EditText
@@ -44,20 +44,20 @@
         app:layout_constraintTop_toBottomOf="@id/stepCountTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
+ />
 
     <!-- Height Input -->
     <EditText
         android:id="@+id/heightInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:autofillHints="Enter height (m)"
-        android:hint="Enter height (m)"
+        android:autofillHints="Enter height (cm)"
+        android:hint="Enter height (cm)"
         android:inputType="numberDecimal"
         app:layout_constraintTop_toBottomOf="@id/weightInput"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
+/>
 
     <!-- BMI Calculation Button -->
     <Button
@@ -68,7 +68,7 @@
         app:layout_constraintTop_toBottomOf="@id/heightInput"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
+ />
 
     <!-- BMI Result Display -->
     <TextView
@@ -80,20 +80,32 @@
         app:layout_constraintTop_toBottomOf="@id/calculateBmiButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
+     />
 
+    <!-- BMI Category Display -->
     <TextView
         android:id="@+id/bmiCategoryTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Overweight"
+        android:text="Category: N/A"
         android:textSize="18sp"
         android:textColor="#FF5733"
         android:layout_marginTop="5dp"
         app:layout_constraintTop_toBottomOf="@id/bmiResultTextView"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="20dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
+    <!-- Add BMI Data to Database Button -->
+    <Button
+        android:id="@+id/addBmiButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add to DB"
+        app:layout_constraintTop_toBottomOf="@id/bmiCategoryTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+/>
 
     <!-- Bottom Navigation Bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
