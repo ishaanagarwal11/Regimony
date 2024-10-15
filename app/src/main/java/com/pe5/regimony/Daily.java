@@ -10,6 +10,9 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,8 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class Daily extends AppCompatActivity implements SensorEventListener {
 
@@ -26,15 +29,29 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor stepCounterSensor;
     private TextView stepCountTextView;
-    private int totalSteps = 0;
     private int previousTotalSteps = 0;
+
+    // Variables for BMI calculation
+    private EditText weightInput, heightInput;
+    private TextView bmiResultTextView, bmiCategoryTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily);
 
+        // Initialize step count display
         stepCountTextView = findViewById(R.id.stepCountTextView);
+
+        // Initialize views for BMI calculation
+        weightInput = findViewById(R.id.weightInput);
+        heightInput = findViewById(R.id.heightInput);
+        bmiResultTextView = findViewById(R.id.bmiResultTextView);
+        bmiCategoryTextView = findViewById(R.id.bmiCategoryTextView);
+        Button calculateBmiButton = findViewById(R.id.calculateBmiButton);
+
+        // Handle BMI calculation on button click
+        calculateBmiButton.setOnClickListener(v -> calculateBMI());
 
         // Check and request permission for physical activity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -47,12 +64,8 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
             startStepCounter(); // No permission required for versions below Android 10
         }
 
-        // Setup BottomNavigationView...
-        // Your existing bottom navigation code here.
         // Setup BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-
-        // Set the selected item to records
         bottomNavigationView.setSelectedItemId(R.id.navigation_records);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
@@ -80,7 +93,6 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
 
             return false;
         });
-
     }
 
     // Start the step counter sensor
@@ -143,6 +155,55 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
             } else {
                 Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    // Method to calculate BMI
+    private void calculateBMI() {
+        String weightStr = weightInput.getText().toString();
+        String heightStr = heightInput.getText().toString();
+
+        // Check if weight and height inputs are not empty
+        if (TextUtils.isEmpty(weightStr) || TextUtils.isEmpty(heightStr)) {
+            Toast.makeText(Daily.this, "Please enter both weight and height", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            // Parse the inputs to float
+            float weight = Float.parseFloat(weightStr);
+            float height = Float.parseFloat(heightStr);
+
+            // Validate inputs
+            if (weight <= 0 || height <= 0) {
+                Toast.makeText(Daily.this, "Weight and height must be positive numbers", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // BMI Calculation: BMI = weight (kg) / (height (m) * height (m))
+            float bmi = weight / (height * height);
+
+            // Display the BMI result
+            bmiResultTextView.setText(String.format("BMI: %.2f", bmi));
+
+            // Determine the BMI category
+            String bmiCategory;
+            if (bmi < 18.5) {
+                bmiCategory = "Underweight";
+            } else if (bmi >= 18.5 && bmi <= 24.9) {
+                bmiCategory = "Normal weight";
+            } else if (bmi >= 25 && bmi <= 29.9) {
+                bmiCategory = "Overweight";
+            } else {
+                bmiCategory = "Obesity";
+            }
+
+            // Set the BMI category in the TextView
+            bmiCategoryTextView.setText(bmiCategory);
+
+        } catch (NumberFormatException e) {
+            // Handle number format exception
+            Toast.makeText(Daily.this, "Invalid input", Toast.LENGTH_SHORT).show();
         }
     }
 }
