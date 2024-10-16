@@ -8,6 +8,25 @@
     android:layout_height="match_parent"
     tools:context=".Daily">
 
+    <Button
+        android:id="@+id/simulateStepButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Simulate Step"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center"
+        android:textColor="@android:color/white"
+        />
+
+    <Button
+        android:id="@+id/resetStepsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Simulate Step Reset"
+        android:layout_gravity="center"
+        />
+
+
     <!-- Page Title TextView -->
     <TextView
         android:id="@+id/dailyPageTitle"
@@ -19,14 +38,15 @@
         android:layout_marginTop="30dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
     <!-- Step Count Display -->
     <TextView
         android:id="@+id/stepCountTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Steps"
+        android:text="Steps: 0"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/dailyPageTitle"
         app:layout_constraintStart_toStartOf="parent"
@@ -116,6 +136,7 @@
         app:menu="@menu/bottom_nav_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

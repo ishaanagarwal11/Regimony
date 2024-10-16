@@ -66,10 +66,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void updateStepsForPreviousDay(String date, int finalSteps) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_STEPS, finalSteps);
+        // Check if a row for the previous day already exists
+        String query = "SELECT * FROM " + TABLE_DAILY + " WHERE " + COLUMN_DATE + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{date});
 
-        // Update only the steps for the previous day
-        db.update(TABLE_DAILY, values, COLUMN_DATE + " = ?", new String[]{date});
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_STEPS, finalSteps); // Only updating steps
+
+        if (cursor.getCount() > 0) {
+            // If the row exists, update the steps for the previous day
+            db.update(TABLE_DAILY, values, COLUMN_DATE + " = ?", new String[]{date});
+        } else {
+            // If the row does not exist, insert a new row with the date and steps, leaving BMI and BMI category empty
+            values.put(COLUMN_DATE, date);
+            db.insert(TABLE_DAILY, null, values);
+        }
+        cursor.close();
     }
 }
