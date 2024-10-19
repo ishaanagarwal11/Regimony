@@ -1,6 +1,8 @@
 package com.pe5.regimony;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +13,9 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,21 +26,26 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class Daily extends AppCompatActivity implements SensorEventListener {
 
     private static final int PERMISSION_REQUEST_ACTIVITY_RECOGNITION = 100;
     private static final int PERMISSION_REQUEST_NOTIFICATION = 101;
+    private static final int PERMISSION_REQUEST_SCHEDULE_ALARM = 102;
 
     private SensorManager sensorManager;
     private Sensor stepCounterSensor;
     private TextView stepCountTextView;
+    private Button simulateStepButton, resetStepsButton;
 
     private int totalSteps = 0;
     private int previousTotalSteps = 0;
 
     private SharedPreferences sharedPreferences;
     private static final String PREFS_NAME = "stepCounterPrefs";
-    private static final String STEPS_SINCE_BOOT_KEY = "stepsSinceBoot";
     private static final String PREVIOUS_STEPS_KEY = "previousTotalSteps";
 
     @Override
@@ -44,6 +54,8 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
         setContentView(R.layout.activity_daily);
 
         stepCountTextView = findViewById(R.id.stepCountTextView);
+        simulateStepButton = findViewById(R.id.simulateStepButton);
+        resetStepsButton = findViewById(R.id.resetStepsButton);
 
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -59,7 +71,10 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
             checkNotificationPermissionAndStartStepCounter(); // For versions below Android 10
         }
 
-        // Setup BottomNavigationView...
+        // Schedule the alarm for midnight reset
+        checkAlarmPermission();
+
+        // Setup BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.navigation_daily);
 
@@ -86,6 +101,21 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
             }
             return false;
         });
+
+        // Add button functionality
+        simulateStepButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                simulateStep();
+            }
+        });
+
+        resetStepsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                triggerMidnightReset();
+            }
+        });
     }
 
     private void checkNotificationPermissionAndStartStepCounter() {
@@ -100,11 +130,25 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
         }
     }
 
+    private void checkAlarmPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!getSystemService(AlarmManager.class).canScheduleExactAlarms()) {
+                Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                startActivity(intent);
+            } else {
+                scheduleMidnightReset();
+            }
+        } else {
+            scheduleMidnightReset();
+        }
+    }
+
     private void startStepCounter() {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         if (sensorManager != null) {
             stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
             if (stepCounterSensor != null) {
+                // Registering the sensor event listener
                 sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_UI);
             } else {
                 Toast.makeText(this, "Step Counter Sensor not available", Toast.LENGTH_SHORT).show();
@@ -113,6 +157,42 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
 
         // Retrieve the previous steps stored from SharedPreferences
         previousTotalSteps = sharedPreferences.getInt(PREVIOUS_STEPS_KEY, 0);
+    }
+
+    private void scheduleMidnightReset() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        Intent intent = new Intent(this, MidnightResetReceiver.class);
+
+        // Use FLAG_IMMUTABLE for PendingIntent targeting API 31+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY, pendingIntent);
+        }
+    }
+
+    private void simulateStep() {
+        // Simulate a step
+        totalSteps++;
+        stepCountTextView.setText(String.valueOf(totalSteps));
+    }
+
+    private void triggerMidnightReset() {
+        // Manually trigger the broadcast receiver to simulate midnight reset
+        Intent intent = new Intent(this, MidnightResetReceiver.class);
+        intent.putExtra("stepsToday", Integer.parseInt(stepCountTextView.getText().toString()));  // Pass current steps from TextView
+        sendBroadcast(intent);
+        // Reset the TextView to 0 and SharedPreferences to ensure steps start from 0
+        stepCountTextView.setText(String.valueOf(0));
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(PREVIOUS_STEPS_KEY, totalSteps); // Save today's total steps
+        editor.apply();
+        totalSteps = 0;  // Reset the totalSteps to 0 for a new day
     }
 
     @Override
@@ -127,6 +207,7 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
 
             // Calculate steps taken today
             int stepsToday = stepsSinceBoot - previousTotalSteps;
+            totalSteps = stepsToday; // Store steps in totalSteps
             stepCountTextView.setText(String.valueOf(stepsToday));
         }
     }

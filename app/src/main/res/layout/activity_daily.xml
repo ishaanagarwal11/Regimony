@@ -8,6 +8,16 @@
     android:layout_height="match_parent"
     tools:context=".Daily">
 
+
+
+    <Button
+        android:id="@+id/resetStepsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Simulate Step Reset"
+        android:layout_gravity="center"
+        />
+
     <Button
         android:id="@+id/simulateStepButton"
         android:layout_width="wrap_content"
@@ -16,14 +26,7 @@
         android:layout_marginTop="16dp"
         android:layout_gravity="center"
         android:textColor="@android:color/white"
-        />
-
-    <Button
-        android:id="@+id/resetStepsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Simulate Step Reset"
-        android:layout_gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/resetStepsButton"
         />
 
 

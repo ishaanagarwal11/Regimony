@@ -56,7 +56,7 @@
 
         <!-- BroadcastReceiver for resetting steps at midnight -->
         <receiver
-            android:name=".StepResetReceiver"
+            android:name=".MidnightResetReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
