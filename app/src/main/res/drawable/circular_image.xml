@@ -1,0 +1,11 @@
+<!-- res/drawable/circular_image.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@android:color/white" />
+            <stroke
+                android:width="2dp"
+                android:color="@android:color/darker_gray" />
+        </shape>
+    </item>
+</layer-list>

@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,14 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
     private TextView stepCountTextView;
     private Button simulateStepButton, resetStepsButton;
 
+    private DatabaseHelper dbHelper;  // Declare dbHelper
+
+    // Variables for BMI calculation
+    private TextView bmiResultTextView, bmiCategoryTextView;
+    private EditText weightInput, heightInput;
+    private Button calculateBmiButton, addBmiButton;
+
+
     private int totalSteps = 0;
     private int previousTotalSteps = 0;
 
@@ -53,9 +62,24 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily);
 
+        dbHelper = new DatabaseHelper(this);
+
+
         stepCountTextView = findViewById(R.id.stepCountTextView);
         simulateStepButton = findViewById(R.id.simulateStepButton);
         resetStepsButton = findViewById(R.id.resetStepsButton);
+
+        // Initialize views for BMI calculation
+        weightInput = findViewById(R.id.weightInput);
+        heightInput = findViewById(R.id.heightInput);
+        bmiResultTextView = findViewById(R.id.bmiResultTextView);
+        bmiCategoryTextView = findViewById(R.id.bmiCategoryTextView);
+        calculateBmiButton = findViewById(R.id.calculateBmiButton);
+        addBmiButton = findViewById(R.id.addBmiButton);
+
+        bmiResultTextView.setVisibility(View.GONE);
+        bmiCategoryTextView.setVisibility(View.GONE);
+
 
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -116,6 +140,12 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
                 triggerMidnightReset();
             }
         });
+
+        // Set up BMI calculation button logic
+        calculateBmiButton.setOnClickListener(v -> calculateAndDisplayBMI());
+
+        // Add BMI and step data to the database
+        addBmiButton.setOnClickListener(v -> saveToDatabase());
     }
 
     private void checkNotificationPermissionAndStartStepCounter() {
@@ -268,5 +298,82 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
                 Toast.makeText(this, "Permission for notifications denied", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    // Method to calculate and display BMI
+    private void calculateAndDisplayBMI() {
+        String weightText = weightInput.getText().toString();
+        String heightText = heightInput.getText().toString();
+
+        if (!weightText.isEmpty() && !heightText.isEmpty()) {
+            double weight = Double.parseDouble(weightText);
+            double height = Double.parseDouble(heightText);
+
+            if (height > 0) {
+                double bmi = weight / ((height / 100) * (height / 100));
+                bmiResultTextView.setText("BMI: " + String.format(Locale.getDefault(), "%.2f", bmi));
+
+                String bmiCategory = getBMICategory(bmi);
+                bmiCategoryTextView.setText("Category: " + bmiCategory);
+
+                // Show the result and category TextViews
+                bmiResultTextView.setVisibility(View.VISIBLE);
+                bmiCategoryTextView.setVisibility(View.VISIBLE);
+            } else {
+                Toast.makeText(this, "Height must be greater than 0", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "Please enter weight and height", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    // Method to get BMI category based on BMI value
+    private String getBMICategory(double bmi) {
+        if (bmi < 18.5) {
+            return "Underweight";
+        } else if (bmi >= 18.5 && bmi < 24.9) {
+            return "Normal";
+        } else if (bmi >= 25 && bmi < 29.9) {
+            return "Overweight";
+        } else {
+            return "Obese";
+        }
+    }
+
+    // Method to save steps, BMI, and category to the database
+    private void saveToDatabase() {
+        String weightText = weightInput.getText().toString();
+        String heightText = heightInput.getText().toString();
+        if (!weightText.isEmpty() && !heightText.isEmpty()) {
+            double weight = Double.parseDouble(weightText);
+            double height = Double.parseDouble(heightText);
+            if (height > 0) {
+                double bmi = weight / ((height / 100) * (height / 100));
+                String bmiCategory = getBMICategory(bmi);
+
+                int currentSteps = getCurrentStepsFromService();
+                String currentDate = getCurrentDate();
+
+                dbHelper.insertOrUpdateDailyData(currentDate, currentSteps, bmi, bmiCategory);
+                Toast.makeText(this, "Data saved successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Height must be greater than 0", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "Please enter weight and height", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Placeholder method to get current steps from background service
+    private int getCurrentStepsFromService() {
+        // Implement your logic to get the current step count from the background service
+        return totalSteps;
+    }
+
+    // Placeholder method to get the current date
+    private String getCurrentDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return sdf.format(Calendar.getInstance().getTime());
     }
 }

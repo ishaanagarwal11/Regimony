@@ -48,7 +48,9 @@ dependencies {
     annotationProcessor(libs.compiler) // Required for Glide
 
     implementation(libs.play.services.auth)
-    implementation(libs.material.v160) // Ensure this or newer version is added
+
+    implementation (libs.material.v190)  // Use the latest stable version
+
 
 
 

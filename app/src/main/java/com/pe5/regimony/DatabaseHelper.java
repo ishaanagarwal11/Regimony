@@ -38,6 +38,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // Method to get daily data for a specific date
+    public Cursor getDailyDataByDate(String date) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_DAILY + " WHERE " + COLUMN_DATE + " = ?";
+        return db.rawQuery(query, new String[]{date});
+    }
+
+
     // Method to insert or update daily data (steps, BMI, and BMI category)
     public void insertOrUpdateDailyData(String date, int steps, double bmi, String bmiCategory) {
         SQLiteDatabase db = this.getWritableDatabase();

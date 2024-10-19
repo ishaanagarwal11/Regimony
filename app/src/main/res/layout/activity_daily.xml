@@ -8,127 +8,173 @@
     android:layout_height="match_parent"
     tools:context=".Daily">
 
-
-
-    <Button
-        android:id="@+id/resetStepsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Simulate Step Reset"
-        android:layout_gravity="center"
-        />
-
-    <Button
-        android:id="@+id/simulateStepButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Simulate Step"
-        android:layout_marginTop="16dp"
-        android:layout_gravity="center"
-        android:textColor="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/resetStepsButton"
-        />
-
-
     <!-- Page Title TextView -->
     <TextView
         android:id="@+id/dailyPageTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Daily Page"
+        android:text="Keep Daily Track"
         android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginTop="30dp"
+        android:textStyle="normal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        android:layout_marginTop="30dp"/>
 
-    <!-- Step Count Display -->
-    <TextView
-        android:id="@+id/stepCountTextView"
-        android:layout_width="wrap_content"
+    <!-- Steps Section CardView -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/stepsSectionCard"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Steps: 0"
-        android:textSize="20sp"
+        app:cardCornerRadius="16dp"
+        android:elevation="8dp"
         app:layout_constraintTop_toBottomOf="@id/dailyPageTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
- />
+        android:layout_margin="16dp">
 
-    <!-- Weight Input -->
-    <EditText
-        android:id="@+id/weightInput"
-        android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Steps Section Heading -->
+            <TextView
+                android:id="@+id/stepsSectionTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Steps Taken Today"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"/>
+
+            <!-- Step Count Display -->
+            <TextView
+                android:id="@+id/stepCountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="100sp"
+                android:layout_gravity="center"
+                android:textStyle="italic"
+                android:layout_marginTop="16dp"/>
+
+            <!-- Simulate Step Button -->
+            <Button
+                android:id="@+id/simulateStepButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Simulate Step"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#FF69B4"
+                android:layout_gravity="center"/>
+
+            <!-- Reset Steps Button -->
+            <Button
+                android:id="@+id/resetStepsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Simulate Step Reset"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#FF69B4"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- BMI Section CardView -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/bmiSectionCard"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:autofillHints="Enter weight (kg)"
-        android:hint="Enter weight (kg)"
-        android:inputType="numberDecimal"
-        app:layout_constraintTop_toBottomOf="@id/stepCountTextView"
+        app:cardCornerRadius="16dp"
+        android:elevation="8dp"
+        app:layout_constraintTop_toBottomOf="@id/stepsSectionCard"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
- />
+        android:layout_margin="16dp">
 
-    <!-- Height Input -->
-    <EditText
-        android:id="@+id/heightInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autofillHints="Enter height (cm)"
-        android:hint="Enter height (cm)"
-        android:inputType="numberDecimal"
-        app:layout_constraintTop_toBottomOf="@id/weightInput"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <!-- BMI Calculation Button -->
-    <Button
-        android:id="@+id/calculateBmiButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Calculate BMI"
-        app:layout_constraintTop_toBottomOf="@id/heightInput"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
- />
+            <!-- BMI Section Heading -->
+            <TextView
+                android:id="@+id/bmiSectionTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Body Mass Index (BMI)"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"/>
 
-    <!-- BMI Result Display -->
-    <TextView
-        android:id="@+id/bmiResultTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="BMI: N/A"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/calculateBmiButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-     />
+            <!-- Weight Input -->
+            <EditText
+                android:id="@+id/weightInput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autofillHints="Enter weight (kg)"
+                android:hint="Enter weight (kg)"
+                android:inputType="numberDecimal"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center"/>
 
-    <!-- BMI Category Display -->
-    <TextView
-        android:id="@+id/bmiCategoryTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Category: N/A"
-        android:textSize="18sp"
-        android:textColor="#FF5733"
-        android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@id/bmiResultTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+            <!-- Height Input -->
+            <EditText
+                android:id="@+id/heightInput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autofillHints="Enter height (cm)"
+                android:hint="Enter height (cm)"
+                android:inputType="numberDecimal"
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center"/>
 
-    <!-- Add BMI Data to Database Button -->
-    <Button
-        android:id="@+id/addBmiButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add to DB"
-        app:layout_constraintTop_toBottomOf="@id/bmiCategoryTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-/>
+            <!-- BMI Calculation Button -->
+            <Button
+                android:id="@+id/calculateBmiButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calculate BMI"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="#FF69B4"
+                android:layout_gravity="center"/>
+
+            <!-- BMI Result Display -->
+            <TextView
+                android:id="@+id/bmiResultTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BMI: N/A"
+                android:textSize="18sp"
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center"/>
+
+            <!-- BMI Category Display -->
+            <TextView
+                android:id="@+id/bmiCategoryTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Category: N/A"
+                android:textSize="18sp"
+                android:textColor="#FF5733"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center"/>
+
+            <!-- Add BMI Data to Database Button -->
+            <Button
+                android:id="@+id/addBmiButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add to DB"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="#FF69B4"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
     <!-- Bottom Navigation Bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -139,7 +185,6 @@
         app:menu="@menu/bottom_nav_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

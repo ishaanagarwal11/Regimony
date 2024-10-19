@@ -33,10 +33,18 @@ public class Home extends AppCompatActivity {
 
     // Video embed codes array
     private String[] videoEmbeds = {
-            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/V2KCAfHjySQ?si=L6JgLFvk7zzqT39S\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/3dQ6yKSttEc?si=D3H6jti4v7pRAAqQ\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/R0GO9vdYvec?si=TyABzHuGfsYiN4XX\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/c06dTj0v0sM?si=ZxE-ShVEMymfsfsZ\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Y8HIFRPU6pM?si=r1YCu7Ig10eVb4Lw\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/vYC5ZzJI2PU?si=ad_ouYp_u-4DZxSp\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/0g1uOi8K0mI?si=axtWQyHARlXIrHHD\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/K3ecwyRMFSE?si=G6XiAfe0Ueom9m3_\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/z6ffSvkAkSM?si=AeHdgrQd3LFN8zh4\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/yvxX0XfqJtw?si=4gzs3jz3l70nDRY1\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/vmwAL2yn-Ug?si=u-dQrZrDTfy6YHA-\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/ExT6kFnmR-s?si=LIV2S6Dr82sWJ1Oy\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/EvOWGRLnQQA?si=6pqtaD7mQs9wxpS3\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
     };
+
 
     Random random = new Random(); // To randomly pick videos
 
@@ -134,6 +142,8 @@ public class Home extends AppCompatActivity {
     }
 
     // Adds a randomly chosen YouTube embed to the LinearLayout
+    // Adds a randomly chosen YouTube embed to the LinearLayout
+    // Adds a randomly chosen YouTube embed to the LinearLayout
     private void addRandomVideoEmbed() {
         WebView webView = new WebView(this);
 
@@ -154,15 +164,15 @@ public class Home extends AppCompatActivity {
         // Apply the layout params to the WebView
         webView.setLayoutParams(params);
 
+        // Randomly select one of the video embeds
+        String randomVideoEmbed = videoEmbeds[random.nextInt(videoEmbeds.length)];
+
         // Ensure iframe fits the screen width using 100% width and maintains aspect ratio
         String videoHtml = "<html><body style='margin:0;padding:0;'>"
                 + "<iframe width=\"100%\" height=\"auto\" style=\"aspect-ratio: 16/9;\""
-                + " src=\"https://www.youtube.com/embed/V2KCAfHjySQ?si=L6JgLFvk7zzqT39S\""
+                + " src=\"" + extractVideoSrc(randomVideoEmbed) + "\""
                 + " frameborder=\"0\" allowfullscreen></iframe>"
                 + "</body></html>";
-
-        // Adjust this to randomly pick one of your video embeds
-        String randomVideoEmbed = videoEmbeds[random.nextInt(videoEmbeds.length)];
 
         // Load the responsive HTML into the WebView
         webView.loadData(videoHtml, "text/html", "utf-8");
@@ -172,6 +182,15 @@ public class Home extends AppCompatActivity {
         // Add the WebView to the container
         webviewContainer.addView(webView);
     }
+
+    // Helper method to extract the src from the embed code
+    private String extractVideoSrc(String embedCode) {
+        int start = embedCode.indexOf("src=\"") + 5;
+        int end = embedCode.indexOf("\"", start);
+        return embedCode.substring(start, end);
+    }
+
+
 
     private void setGreetingMessage() {
         String greeting;
