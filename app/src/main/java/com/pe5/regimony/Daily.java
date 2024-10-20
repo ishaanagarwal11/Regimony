@@ -311,10 +311,10 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
 
             if (height > 0) {
                 double bmi = weight / ((height / 100) * (height / 100));
-                bmiResultTextView.setText("BMI: " + String.format(Locale.getDefault(), "%.2f", bmi));
+                bmiResultTextView.setText("" + String.format(Locale.getDefault(), "%.2f", bmi));
 
                 String bmiCategory = getBMICategory(bmi);
-                bmiCategoryTextView.setText("Category: " + bmiCategory);
+                bmiCategoryTextView.setText("" + bmiCategory);
 
                 // Show the result and category TextViews
                 bmiResultTextView.setVisibility(View.VISIBLE);

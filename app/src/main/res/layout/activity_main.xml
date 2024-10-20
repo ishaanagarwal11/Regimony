@@ -6,44 +6,24 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".MainActivity">
 
-    <!-- Profile Image -->
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/profileImage"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="40dp"
-        android:src="@drawable/default_avatar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-    />
 
     <!-- Name TextView -->
     <TextView
         android:id="@+id/nameTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@+id/profileImage"
+        android:text="REGIMONY"
+        android:textStyle="italic"
+        android:textSize="70sp"
+        android:textColor="#fff"
+        android:paddingTop="100dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="10dp"
-        />
-
-    <!-- Email TextView -->
-    <TextView
-        android:id="@+id/mailTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Email"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/nameTV"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="200dp"
         />
 
     <!-- Google Sign-In Button -->
@@ -52,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@+id/mailTV"
+        app:layout_constraintTop_toBottomOf="@+id/nameTV"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />

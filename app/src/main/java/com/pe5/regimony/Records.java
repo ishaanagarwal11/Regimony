@@ -41,7 +41,6 @@ public class Records extends AppCompatActivity {
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             String selectedDate = formatDate(year, month, dayOfMonth);
             showDataForDate(selectedDate);
-            Toast.makeText(this, "Selected Date: " + selectedDate, Toast.LENGTH_SHORT).show();
         });
 
         // Initialize the view with current date's data
@@ -95,7 +94,7 @@ public class Records extends AppCompatActivity {
 
     private void showDataForDate(String date) {
         // Show the selected date for debugging
-        Toast.makeText(this, "Selected Date: " + date, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Selected Date: " + date, Toast.LENGTH_SHORT).show();
 
         // Fetch data from the database for the selected date
         Cursor cursor = databaseHelper.getDailyDataByDate(date);
@@ -109,28 +108,27 @@ public class Records extends AppCompatActivity {
 
             // Only display the TextViews if the data is available
             if (steps > 0) {
-                txtSteps.setText("Steps: " + steps);
+                txtSteps.setText(""+ steps);
                 txtSteps.setVisibility(View.VISIBLE);
             } else {
                 txtSteps.setVisibility(View.GONE);
             }
 
             if (bmi > 0) {
-                txtBmi.setText("BMI: " + bmi);
+                txtBmi.setText("" + bmi);
                 txtBmi.setVisibility(View.VISIBLE);
             } else {
                 txtBmi.setVisibility(View.GONE);
             }
 
             if (bmiCategory != null && !bmiCategory.equals("N/A")) {
-                txtBmiCategory.setText("Category: " + bmiCategory);
+                txtBmiCategory.setText("" + bmiCategory);
                 txtBmiCategory.setVisibility(View.VISIBLE);
             } else {
                 txtBmiCategory.setVisibility(View.GONE);
             }
 
             // Toast message to confirm data was found
-            Toast.makeText(this, "Data found for date: " + date, Toast.LENGTH_SHORT).show();
         } else {
             // If no data is found, show this message
             Toast.makeText(this, "No data found for date: " + date, Toast.LENGTH_SHORT).show();

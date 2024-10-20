@@ -8,19 +8,48 @@
     android:layout_height="match_parent"
     tools:context=".Profile">
 
-    <!-- Profile Image (Circular Crop using a custom drawable) -->
-    <com.pe5.regimony.CustomCircularImageView
-        android:id="@+id/profileImage"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="40dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/default_avatar"
+    <!-- Heading "Regimony" -->
+    <TextView
+        android:id="@+id/pageTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Regimony"
+        android:textSize="75sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/profileName" />
+        android:layout_marginTop="30dp" />
 
+    <!-- Horizontal layout to place profile image and default avatar side by side -->
+    <LinearLayout
+        android:id="@+id/profileImageLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/pageTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp">
+
+        <!-- Profile Image (Circular Crop) -->
+        <com.pe5.regimony.CustomCircularImageView
+            android:id="@+id/profileImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_avatar"
+            android:layout_marginEnd="16dp"/>
+
+        <!-- Default Avatar Next to Profile Image (Circular Crop) -->
+        <com.pe5.regimony.CustomCircularImageView
+            android:id="@+id/defaultAvatar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_avatar" />
+
+    </LinearLayout>
 
     <!-- Profile Name -->
     <TextView
@@ -29,8 +58,7 @@
         android:layout_height="wrap_content"
         android:text="Name"
         android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/profileImage"
+        app:layout_constraintTop_toBottomOf="@id/profileImageLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="10dp" />
@@ -42,32 +70,56 @@
         android:layout_height="wrap_content"
         android:text="Email"
         android:textSize="16sp"
+        android:textStyle="italic"
         app:layout_constraintTop_toBottomOf="@id/profileName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="10dp" />
 
-    <!-- Logout Button -->
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
+    <!-- Description about Regimony -->
+    <TextView
+        android:id="@+id/regimonyDescription"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Logout"
-        android:layout_marginTop="20dp"
+        android:text="By aligning your daily routines with your wellness objectives, you can achieve harmony between your mind, body, and soul."
+        android:textSize="20sp"
+        android:gravity="center"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
         app:layout_constraintTop_toBottomOf="@id/profileEmail"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp" />
 
-    <!-- Emergency Call Button -->
+    <!-- Large Emergency Call Button (same size as Logout) -->
     <Button
         android:id="@+id/emergencyCallButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
         android:text="Emergency Call"
+        android:textSize="18sp"
+        android:textColor="#ffffff"
         android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/logoutButton"
+        app:layout_constraintTop_toBottomOf="@id/regimonyDescription"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8" /> <!-- Adjusts width to 80% of screen -->
+
+    <!-- Large Logout Button -->
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:text="Logout"
+        android:textSize="18sp"
+        android:textColor="#ffffff"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/emergencyCallButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8" /> <!-- Adjusts width to 80% of screen -->
 
     <!-- Bottom Navigation Bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView

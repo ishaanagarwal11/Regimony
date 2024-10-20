@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
         imageView = findViewById(R.id.profileImage);
         name = findViewById(R.id.nameTV);
-        mail = findViewById(R.id.mailTV);
         logoutButton = findViewById(R.id.logoutButton);  // Reference to the Logout button
 
         // Hide logout button initially

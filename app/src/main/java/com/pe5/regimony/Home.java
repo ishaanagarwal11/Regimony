@@ -26,10 +26,30 @@ public class Home extends AppCompatActivity {
 
     FirebaseAuth auth;
     GoogleSignInClient googleSignInClient;
-    Button logoutButton;
     TextView greetingText;
     LinearLayout webviewContainer;
     ScrollView scrollView;
+
+    private String[] healthTips = {
+            "\"Eat a balanced diet with a variety of fruits, vegetables, and whole grains.\"",
+            "\"Drink plenty of water to stay hydrated.\"",
+            "\"Take a brisk walk daily to boost your heart health.\"",
+            "\"Eat a balanced diet with fruits and vegetables.\"",
+            "\"Get enough sleep to keep your body rested.\"",
+            "\"Practice mindfulness and reduce stress.\"",
+            "\"Incorporate strength training exercises into your routine to build muscle and bone health.\"",
+            "\"Limit sugary drinks and foods to maintain a healthy weight.\"",
+            "\"Take regular breaks from screens to reduce eye strain.\"",
+            "\"Maintain a consistent sleep schedule, even on weekends.\"",
+            "\"Stretch daily to improve flexibility and prevent injuries.\"",
+            "\"Limit your intake of processed and fast foods.\"",
+            "\"Laugh often to improve your mental well-being.\"",
+            "\"Start your day with a nutritious breakfast for sustained energy.\"",
+            "\"Stay positive and surround yourself with supportive people.\""
+    };
+
+
+
 
     // Video embed codes array
     private String[] videoEmbeds = {
@@ -63,24 +83,22 @@ public class Home extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(Home.this, options);
 
         greetingText = findViewById(R.id.greetingText);
-        logoutButton = findViewById(R.id.logoutButton);
         webviewContainer = findViewById(R.id.webviewContainer);
         scrollView = findViewById(R.id.scrollView);
+
+        // Get reference to the TextView for health tip
+        TextView healthTipText = findViewById(R.id.healthTipText);
+
+        // Get a random health tip
+        String randomTip = getRandomHealthTip();
+
+        // Set the random tip to the TextView
+        healthTipText.setText(randomTip);
+
 
         // Set greeting message based on the time of the day
         setGreetingMessage();
 
-        // Set logout button action
-        logoutButton.setOnClickListener(view -> {
-            // Sign out from Firebase and Google
-            auth.signOut();
-            googleSignInClient.signOut().addOnCompleteListener(task -> {
-                // Redirect to MainActivity after signing out
-                Intent intent = new Intent(Home.this, MainActivity.class);
-                startActivity(intent);
-                finish(); // Close Home activity
-            });
-        });
 
         // Load initial videos
         loadInitialVideos();
@@ -125,6 +143,12 @@ public class Home extends AppCompatActivity {
             return false;
         });
 
+    }
+
+    private String getRandomHealthTip() {
+        Random random = new Random();
+        int index = random.nextInt(healthTips.length);
+        return healthTips[index];
     }
 
     // Load initial set of videos
@@ -207,7 +231,7 @@ public class Home extends AppCompatActivity {
 
         // If the user is logged in, include their name in the greeting
         if (auth.getCurrentUser() != null) {
-            greeting += ", " + auth.getCurrentUser().getDisplayName();
+            greeting += "!";
         }
 
         greetingText.setText(greeting);
