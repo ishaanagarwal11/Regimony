@@ -38,13 +38,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // Getter for TABLE_DAILY
+    public String getTableDaily() {
+        return TABLE_DAILY;
+    }
+
+    // Getter for COLUMN_DATE
+    public String getColumnDate() {
+        return COLUMN_DATE;
+    }
+
     // Method to get daily data for a specific date
     public Cursor getDailyDataByDate(String date) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_DAILY + " WHERE " + COLUMN_DATE + " = ?";
         return db.rawQuery(query, new String[]{date});
     }
-
 
     // Method to insert or update daily data (steps, BMI, and BMI category)
     public void insertOrUpdateDailyData(String date, int steps, double bmi, String bmiCategory) {
@@ -68,6 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.insert(TABLE_DAILY, null, values);
         }
         cursor.close();
+        db.close();
     }
 
     // Method to update steps for the previous day at midnight
@@ -85,10 +95,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // If the row exists, update the steps for the previous day
             db.update(TABLE_DAILY, values, COLUMN_DATE + " = ?", new String[]{date});
         } else {
-            // If the row does not exist, insert a new row with the date and steps, leaving BMI and BMI category empty
+            // If the row does not exist, insert a new row with the date and steps
             values.put(COLUMN_DATE, date);
             db.insert(TABLE_DAILY, null, values);
         }
         cursor.close();
+        db.close();
     }
 }

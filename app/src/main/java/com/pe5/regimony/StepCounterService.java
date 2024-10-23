@@ -48,7 +48,6 @@ public class StepCounterService extends Service implements SensorEventListener {
         if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
             int totalStepsSinceBoot = (int) event.values[0];
 
-            // Calculate steps taken
             if (previousTotalSteps == 0) {
                 previousTotalSteps = totalStepsSinceBoot;
             }
@@ -58,10 +57,10 @@ public class StepCounterService extends Service implements SensorEventListener {
             // Save the steps in SharedPreferences
             SharedPreferences.Editor editor = stepPrefs.edit();
             editor.putInt("currentSteps", stepsToday);
-            editor.putInt("previousTotalSteps", previousTotalSteps);
             editor.apply();
         }
     }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {

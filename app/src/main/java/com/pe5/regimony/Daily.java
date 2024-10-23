@@ -14,6 +14,7 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,13 +43,12 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
     private TextView stepCountTextView;
     private Button simulateStepButton, resetStepsButton;
 
-    private DatabaseHelper dbHelper;  // Declare dbHelper
+    private DatabaseHelper dbHelper;
 
     // Variables for BMI calculation
     private TextView bmiResultTextView, bmiCategoryTextView;
     private EditText weightInput, heightInput;
     private Button calculateBmiButton, addBmiButton;
-
 
     private int totalSteps = 0;
     private int previousTotalSteps = 0;
@@ -63,7 +63,6 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
         setContentView(R.layout.activity_daily);
 
         dbHelper = new DatabaseHelper(this);
-
 
         stepCountTextView = findViewById(R.id.stepCountTextView);
         simulateStepButton = findViewById(R.id.simulateStepButton);
@@ -80,7 +79,6 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
         bmiResultTextView.setVisibility(View.GONE);
         bmiCategoryTextView.setVisibility(View.GONE);
 
-
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
@@ -92,7 +90,7 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
                 checkNotificationPermissionAndStartStepCounter();
             }
         } else {
-            checkNotificationPermissionAndStartStepCounter(); // For versions below Android 10
+            checkNotificationPermissionAndStartStepCounter();
         }
 
         // Schedule the alarm for midnight reset
@@ -127,19 +125,8 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
         });
 
         // Add button functionality
-        simulateStepButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                simulateStep();
-            }
-        });
-
-        resetStepsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                triggerMidnightReset();
-            }
-        });
+        simulateStepButton.setOnClickListener(v -> simulateStep());
+        resetStepsButton.setOnClickListener(v -> triggerMidnightReset());
 
         // Set up BMI calculation button logic
         calculateBmiButton.setOnClickListener(v -> calculateAndDisplayBMI());
@@ -178,7 +165,6 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
         if (sensorManager != null) {
             stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
             if (stepCounterSensor != null) {
-                // Registering the sensor event listener
                 sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_UI);
             } else {
                 Toast.makeText(this, "Step Counter Sensor not available", Toast.LENGTH_SHORT).show();
@@ -187,6 +173,8 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
 
         // Retrieve the previous steps stored from SharedPreferences
         previousTotalSteps = sharedPreferences.getInt(PREVIOUS_STEPS_KEY, 0);
+        totalSteps = sharedPreferences.getInt("currentSteps", 0); // Get current steps as well
+        stepCountTextView.setText(String.valueOf(totalSteps));  // Set the step count from SharedPreferences
     }
 
     private void scheduleMidnightReset() {
@@ -196,8 +184,6 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
         calendar.set(Calendar.SECOND, 0);
 
         Intent intent = new Intent(this, MidnightResetReceiver.class);
-
-        // Use FLAG_IMMUTABLE for PendingIntent targeting API 31+
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -207,21 +193,27 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
     }
 
     private void simulateStep() {
-        // Simulate a step
         totalSteps++;
         stepCountTextView.setText(String.valueOf(totalSteps));
+
+        // Save simulated steps to SharedPreferences
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("currentSteps", totalSteps);
+        editor.apply();
     }
 
     private void triggerMidnightReset() {
-        // Manually trigger the broadcast receiver to simulate midnight reset
         Intent intent = new Intent(this, MidnightResetReceiver.class);
         intent.putExtra("stepsToday", Integer.parseInt(stepCountTextView.getText().toString()));  // Pass current steps from TextView
         sendBroadcast(intent);
+
         // Reset the TextView to 0 and SharedPreferences to ensure steps start from 0
         stepCountTextView.setText(String.valueOf(0));
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(PREVIOUS_STEPS_KEY, totalSteps); // Save today's total steps
+        editor.putInt("currentSteps", 0);
         editor.apply();
+
         totalSteps = 0;  // Reset the totalSteps to 0 for a new day
     }
 
@@ -230,15 +222,19 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
         if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
             int stepsSinceBoot = (int) event.values[0];
 
-            // If it's the first time, initialize previous total steps with current boot steps
             if (previousTotalSteps == 0) {
                 previousTotalSteps = stepsSinceBoot;
             }
 
-            // Calculate steps taken today
             int stepsToday = stepsSinceBoot - previousTotalSteps;
-            totalSteps = stepsToday; // Store steps in totalSteps
+            totalSteps = stepsToday;
             stepCountTextView.setText(String.valueOf(stepsToday));
+
+            // Save the steps to SharedPreferences
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("currentSteps", totalSteps);
+            editor.putInt(PREVIOUS_STEPS_KEY, previousTotalSteps);
+            editor.apply();
         }
     }
 
@@ -253,10 +249,13 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
         if (sensorManager != null) {
             sensorManager.unregisterListener(this);
 
-            // Store current steps in SharedPreferences before leaving the activity
+            // Save current steps in SharedPreferences
             SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("currentSteps", totalSteps);
             editor.putInt(PREVIOUS_STEPS_KEY, previousTotalSteps);
             editor.apply();
+
+            Log.d("StepCounter", "Steps saved: " + totalSteps);
 
             // Start the background service to keep counting steps
             Intent serviceIntent = new Intent(this, StepCounterService.class);
@@ -277,8 +276,12 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
             // Stop the background service when activity is resumed
             stopService(new Intent(this, StepCounterService.class));
 
-            // Restore the steps stored from the service while the activity was paused
+            // Restore steps from SharedPreferences
             previousTotalSteps = sharedPreferences.getInt(PREVIOUS_STEPS_KEY, 0);
+            totalSteps = sharedPreferences.getInt("currentSteps", 0);
+
+            // Update the TextView with current steps
+            stepCountTextView.setText(String.valueOf(totalSteps));
         }
     }
 
@@ -300,7 +303,6 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
         }
     }
 
-    // Method to calculate and display BMI
     private void calculateAndDisplayBMI() {
         String weightText = weightInput.getText().toString();
         String heightText = heightInput.getText().toString();
@@ -316,7 +318,6 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
                 String bmiCategory = getBMICategory(bmi);
                 bmiCategoryTextView.setText("" + bmiCategory);
 
-                // Show the result and category TextViews
                 bmiResultTextView.setVisibility(View.VISIBLE);
                 bmiCategoryTextView.setVisibility(View.VISIBLE);
             } else {
@@ -327,8 +328,6 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
         }
     }
 
-
-    // Method to get BMI category based on BMI value
     private String getBMICategory(double bmi) {
         if (bmi < 18.5) {
             return "Underweight";
@@ -341,13 +340,14 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
         }
     }
 
-    // Method to save steps, BMI, and category to the database
     private void saveToDatabase() {
         String weightText = weightInput.getText().toString();
-        String heightText = heightInput.getText().toString();
+        String heightText = weightInput.getText().toString();
+
         if (!weightText.isEmpty() && !heightText.isEmpty()) {
             double weight = Double.parseDouble(weightText);
             double height = Double.parseDouble(heightText);
+
             if (height > 0) {
                 double bmi = weight / ((height / 100) * (height / 100));
                 String bmiCategory = getBMICategory(bmi);
@@ -365,13 +365,10 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
         }
     }
 
-    // Placeholder method to get current steps from background service
     private int getCurrentStepsFromService() {
-        // Implement your logic to get the current step count from the background service
         return totalSteps;
     }
 
-    // Placeholder method to get the current date
     private String getCurrentDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         return sdf.format(Calendar.getInstance().getTime());

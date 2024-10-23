@@ -25,10 +25,10 @@
                 android:id="@+id/dailyPageTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="30dp"
                 android:text="Keep Track Daily"
-                android:textSize="75sp"
+                android:textSize="50sp"
                 android:textStyle="normal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -89,6 +89,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:textColor="#ffffff"
+                            android:translationZ="10dp"
                             android:background="@drawable/left_rounded_button"
                             android:text="Steps ++" />
 
@@ -100,7 +101,7 @@
                             android:layout_weight="1"
                             android:textColor="#ffffff"
                             android:background="@drawable/right_rounded_button"
-                            android:text="Steps Reset" />
+                            android:text="Reset" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -219,7 +220,7 @@
                             android:layout_weight="1"
                             android:textColor="#ffffff"
                             android:background="@drawable/left_rounded_button"
-                            android:text="Calculate BMI" />
+                            android:text="Compute" />
 
                         <!-- Add to DB Button with custom background -->
                         <Button
@@ -229,7 +230,7 @@
                             android:layout_weight="1"
                             android:textColor="#ffffff"
                             android:background="@drawable/right_rounded_button"
-                            android:text="Save BMI" />
+                            android:text="Save" />
 
                     </LinearLayout>
 
