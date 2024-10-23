@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Calendar;
+import java.util.Locale;
+
 import android.database.Cursor;
 import android.widget.Toast;
 import com.pe5.regimony.DatabaseHelper;
@@ -120,7 +122,7 @@ public class Records extends AppCompatActivity {
                 }
 
                 if (bmi > 0) {
-                    txtBmi.setText("" + bmi);
+                    txtBmi.setText(String.format(Locale.getDefault(), "%.2f", bmi));
                     txtBmi.setVisibility(View.VISIBLE);
                 } else {
                     txtBmi.setVisibility(View.GONE);

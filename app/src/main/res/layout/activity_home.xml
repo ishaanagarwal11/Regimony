@@ -14,30 +14,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello"
-        android:textSize="50sp"
-        android:layout_marginLeft="10dp"
+        android:textSize="40sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="30dp"
+        android:textColor="@color/colorPrimary"
         />
 
-    <!-- Health Tip of the Day TextView -->
+    <!-- Health Tip of the Day TextView (Centered) -->
     <TextView
         android:id="@+id/healthTipText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Health Tip of the Day"
         android:textSize="20sp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="15dp"
-        android:padding="20dp"
+        android:textStyle="italic"
         app:layout_constraintTop_toBottomOf="@+id/greetingText"
         app:layout_constraintStart_toStartOf="parent"
-        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="20dp"
 
-        app:layout_constraintEnd_toEndOf="parent"/>
-
+        />
     <!-- ScrollView for infinite scrolling of WebViews -->
     <ScrollView
         android:id="@+id/scrollView"

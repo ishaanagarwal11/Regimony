@@ -25,13 +25,13 @@
                 android:id="@+id/dailyPageTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="30dp"
                 android:text="Keep Track Daily"
-                android:textSize="50sp"
+                android:textSize="40sp"
                 android:textStyle="normal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                android:textColor="@color/colorPrimary"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <!-- Steps Section CardView -->

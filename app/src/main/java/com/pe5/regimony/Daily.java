@@ -387,18 +387,19 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
     private String getBMICategory(double bmi) {
         if (bmi < 18.5) {
             return "Underweight";
-        } else if (bmi >= 18.5 && bmi < 24.9) {
+        } else if (bmi >= 18.5 && bmi < 25) {  // Corrected the upper bound for "Normal"
             return "Normal";
-        } else if (bmi >= 25 && bmi < 29.9) {
+        } else if (bmi >= 25 && bmi < 30) {
             return "Overweight";
         } else {
             return "Obese";
         }
+
     }
 
     private void saveToDatabase() {
         String weightText = weightInput.getText().toString();
-        String heightText = weightInput.getText().toString();
+        String heightText = heightInput.getText().toString();
 
         if (!weightText.isEmpty() && !heightText.isEmpty()) {
             double weight = Double.parseDouble(weightText);
