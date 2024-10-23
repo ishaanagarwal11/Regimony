@@ -2,6 +2,8 @@ package com.pe5.regimony;
 
 import android.Manifest;
 import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +26,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -192,6 +196,7 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
         }
     }
 
+
     private void simulateStep() {
         totalSteps++;
         stepCountTextView.setText(String.valueOf(totalSteps));
@@ -203,19 +208,70 @@ public class Daily extends AppCompatActivity implements SensorEventListener {
     }
 
     private void triggerMidnightReset() {
-        Intent intent = new Intent(this, MidnightResetReceiver.class);
-        intent.putExtra("stepsToday", Integer.parseInt(stepCountTextView.getText().toString()));  // Pass current steps from TextView
-        sendBroadcast(intent);
+        // Retrieve steps from SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("stepCounterPrefs", Context.MODE_PRIVATE);
+        int stepsToday = sharedPreferences.getInt("currentSteps", 0);  // Get current steps from SharedPreferences
 
-        // Reset the TextView to 0 and SharedPreferences to ensure steps start from 0
-        stepCountTextView.setText(String.valueOf(0));
+        // Log the current steps
+        Log.d("Daily", "triggerMidnightReset: Steps today: " + stepsToday);
+
+        // Insert steps into the database for the current day (simulate yesterday's steps)
+        DatabaseHelper db = new DatabaseHelper(this);
+        String yesterdayDate = getYesterdayDate();  // Treat this as yesterday's date for simulation
+        db.updateStepsForPreviousDay(yesterdayDate, stepsToday);
+
+        // Send notification about the steps today (simulating notification for steps taken yesterday)
+        sendStepNotification(this, stepsToday);
+
+        // Reset the steps in SharedPreferences for the new day
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(PREVIOUS_STEPS_KEY, totalSteps); // Save today's total steps
-        editor.putInt("currentSteps", 0);
+        editor.putInt("previousTotalSteps", 0);  // Reset previousTotalSteps to 0
+        editor.putInt("currentSteps", 0);        // Reset currentSteps to 0
         editor.apply();
 
-        totalSteps = 0;  // Reset the totalSteps to 0 for a new day
+        // Reset the TextView to 0 to reflect the reset in the UI
+        stepCountTextView.setText(String.valueOf(0));
+
+        // Reset the totalSteps variable in the current activity
+        totalSteps = 0;
+
+        Log.d("Daily", "triggerMidnightReset: Steps have been reset to 0 for the new day.");
     }
+
+
+    // This method will get yesterday's date in the required format
+    private String getYesterdayDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1);  // Move one day back to get yesterday's date
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return dateFormat.format(calendar.getTime());
+    }
+
+
+    // This method will send a notification with the step count
+    private void sendStepNotification(Context context, int stepsYesterday) {
+        String channelId = "MidnightResetNotificationChannel";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    channelId, "Midnight Reset", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, channelId)
+                .setContentTitle("Simulated Steps")
+                .setContentText("You took " + stepsYesterday + " steps in the simulation.")
+                .setSmallIcon(R.drawable.ic_step_counter)  // Ensure this drawable exists
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+        notificationManagerCompat.notify(1, notificationBuilder.build());
+
+        Log.d("Daily", "Notification sent for simulated steps: " + stepsYesterday);
+    }
+
+
+
 
     @Override
     public void onSensorChanged(SensorEvent event) {

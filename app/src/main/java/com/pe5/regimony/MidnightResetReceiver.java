@@ -22,9 +22,12 @@ public class MidnightResetReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        int stepsYesterday = intent.getIntExtra("stepsToday", 0); // Get steps from Intent
+        // Retrieve steps from SharedPreferences
+        SharedPreferences sharedPreferences = context.getSharedPreferences("stepCounterPrefs", Context.MODE_PRIVATE);
+        int stepsYesterday = sharedPreferences.getInt("currentSteps", 0);  // Get steps stored in SharedPreferences
 
-        Log.d(TAG, "onReceive: Steps yesterday: " + stepsYesterday);
+        // Log the steps from SharedPreferences
+        Log.d(TAG, "onReceive: Retrieved steps from SharedPreferences: " + stepsYesterday);
 
         // Insert steps into the database for the previous day
         DatabaseHelper db = new DatabaseHelper(context);
@@ -35,14 +38,14 @@ public class MidnightResetReceiver extends BroadcastReceiver {
         sendStepNotification(context, stepsYesterday);
 
         // Reset the steps to zero for the new day in SharedPreferences
-        SharedPreferences sharedPreferences = context.getSharedPreferences("stepCounterPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("previousTotalSteps", 0);
-        editor.putInt("currentSteps", 0);
+        editor.putInt("previousTotalSteps", 0);  // Reset previousTotalSteps to 0
+        editor.putInt("currentSteps", 0);        // Reset currentSteps to 0
         editor.apply();
 
-        Log.d(TAG, "onReceive: Steps have been reset to 0.");
+        Log.d(TAG, "onReceive: Steps have been reset to 0 for the new day.");
     }
+
 
     private void sendStepNotification(Context context, int stepsYesterday) {
         String channelId = "MidnightResetNotificationChannel";
