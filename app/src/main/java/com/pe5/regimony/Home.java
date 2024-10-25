@@ -3,15 +3,15 @@ package com.pe5.regimony;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -19,57 +19,30 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class Home extends AppCompatActivity {
 
     FirebaseAuth auth;
     GoogleSignInClient googleSignInClient;
-    TextView greetingText;
+    TextView greetingText, healthTipText;
     LinearLayout webviewContainer;
     ScrollView scrollView;
+    SwipeRefreshLayout swipeRefreshLayout;
 
-    private String[] healthTips = {
-            "\"Eat a balanced diet with a variety of fruits, vegetables, and whole grains.\"",
-            "\"Drink plenty of water to stay hydrated.\"",
-            "\"Take a brisk walk daily to boost your heart health.\"",
-            "\"Eat a balanced diet with fruits and vegetables.\"",
-            "\"Get enough sleep to keep your body rested.\"",
-            "\"Practice mindfulness and reduce stress.\"",
-            "\"Incorporate strength training exercises into your routine to build muscle and bone health.\"",
-            "\"Limit sugary drinks and foods to maintain a healthy weight.\"",
-            "\"Take regular breaks from screens to reduce eye strain.\"",
-            "\"Maintain a consistent sleep schedule, even on weekends.\"",
-            "\"Stretch daily to improve flexibility and prevent injuries.\"",
-            "\"Limit your intake of processed and fast foods.\"",
-            "\"Laugh often to improve your mental well-being.\"",
-            "\"Start your day with a nutritious breakfast for sustained energy.\"",
-            "\"Stay positive and surround yourself with supportive people.\""
-    };
-
-
-
-
-    // Video embed codes array
+    // Hardcoded YouTube embed codes
     private String[] videoEmbeds = {
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/c06dTj0v0sM?si=ZxE-ShVEMymfsfsZ\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/Y8HIFRPU6pM?si=r1YCu7Ig10eVb4Lw\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
             "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/vYC5ZzJI2PU?si=ad_ouYp_u-4DZxSp\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/0g1uOi8K0mI?si=axtWQyHARlXIrHHD\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/K3ecwyRMFSE?si=G6XiAfe0Ueom9m3_\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/z6ffSvkAkSM?si=AeHdgrQd3LFN8zh4\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/yvxX0XfqJtw?si=4gzs3jz3l70nDRY1\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/vmwAL2yn-Ug?si=u-dQrZrDTfy6YHA-\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/ExT6kFnmR-s?si=LIV2S6Dr82sWJ1Oy\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/EvOWGRLnQQA?si=6pqtaD7mQs9wxpS3\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/BhwRo5HNyPQ?si=CN4I_DS-22hHLnal\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/obx7cJtk3fE?si=Gq11pappdd5E0UD5\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-            "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/0SPC_Q7-k40?si=y4cB5w5KxtUXEomU\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+            // Add more hardcoded video embeds as needed
     };
 
-
-    Random random = new Random(); // To randomly pick videos
+    Random random = new Random(); // Random object for video shuffling
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,25 +59,26 @@ public class Home extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(Home.this, options);
 
         greetingText = findViewById(R.id.greetingText);
+        healthTipText = findViewById(R.id.healthTipText);
         webviewContainer = findViewById(R.id.webviewContainer);
         scrollView = findViewById(R.id.scrollView);
-
-        // Get reference to the TextView for health tip
-        TextView healthTipText = findViewById(R.id.healthTipText);
-
-        // Get a random health tip
-        String randomTip = getRandomHealthTip();
-
-        // Set the random tip to the TextView
-        healthTipText.setText(randomTip);
-
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout); // Pull to refresh
 
         // Set greeting message based on the time of the day
         setGreetingMessage();
 
+        // Fetch health tip from Gemini API
+        fetchHealthTip();
 
-        // Load initial videos
-        loadInitialVideos();
+        // Initial loading of videos
+        loadContent();
+
+        // Swipe down to refresh functionality
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            loadContent(); // Load and shuffle videos
+            fetchHealthTip(); // Fetch a new health tip
+            swipeRefreshLayout.setRefreshing(false); // Stop the refresh indicator
+        });
 
         // Infinite scrolling: load more videos when reaching the bottom
         scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
@@ -115,102 +89,82 @@ public class Home extends AppCompatActivity {
 
         // Set up BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-
-        // Set the selected item to Home
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
-
-        // Handle bottom navigation item clicks
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
             if (id == R.id.navigation_home) {
-                // You're already in the Home activity, do nothing
-                return true;
+                return true; // Already in Home
             } else if (id == R.id.navigation_daily) {
-                Intent intent = new Intent(Home.this, Daily.class); // Navigate to Daily activity
-                startActivity(intent);
-                finish();  // Close current Home activity
+                startActivity(new Intent(Home.this, Daily.class));
+                finish();
                 return true;
             } else if (id == R.id.navigation_records) {
-                Intent intent = new Intent(Home.this, Records.class); // Navigate to Records activity
-                startActivity(intent);
-                finish();  // Close current Home activity
+                startActivity(new Intent(Home.this, Records.class));
+                finish();
                 return true;
             } else if (id == R.id.navigation_profile) {
-                Intent intent = new Intent(Home.this, Profile.class); // Navigate to Profile activity
-                startActivity(intent);
-                finish();  // Close current Home activity
+                startActivity(new Intent(Home.this, Profile.class));
+                finish();
                 return true;
             }
-
             return false;
         });
-
     }
 
-    private String getRandomHealthTip() {
-        Random random = new Random();
-        int index = random.nextInt(healthTips.length);
-        return healthTips[index];
-    }
+    private void loadContent() {
+        // Shuffle and load initial set of videos
+        List<String> shuffledVideos = new ArrayList<>();
+        Collections.addAll(shuffledVideos, videoEmbeds);
+        Collections.shuffle(shuffledVideos); // Shuffle videos
 
-    // Load initial set of videos
-    private void loadInitialVideos() {
-        for (int i = 0; i < 3; i++) {
-            addRandomVideoEmbed();
+        webviewContainer.removeAllViews(); // Clear previous videos
+        for (int i = 0; i < 3; i++) { // Load three videos initially
+            addVideoEmbed(shuffledVideos.get(i));
         }
     }
 
-    // Load more videos when the user scrolls
     private void loadMoreVideos() {
+        List<String> shuffledVideos = new ArrayList<>();
+        Collections.addAll(shuffledVideos, videoEmbeds);
+        Collections.shuffle(shuffledVideos);
+
         for (int i = 0; i < 3; i++) {
-            addRandomVideoEmbed();
+            addVideoEmbed(shuffledVideos.get(i));
         }
     }
 
-    // Adds a randomly chosen YouTube embed to the LinearLayout
-    // Adds a randomly chosen YouTube embed to the LinearLayout
-    // Adds a randomly chosen YouTube embed to the LinearLayout
-    private void addRandomVideoEmbed() {
+    private void addVideoEmbed(String videoEmbed) {
         WebView webView = new WebView(this);
 
-        // Get the device's screen width
+        // Get screen width and calculate height for a 16:9 aspect ratio
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        int videoHeight = screenWidth * 9 / 16;
 
-        // Set up margins for the WebView (You can adjust margin values)
+        // Set up layout parameters with calculated height
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,  // Make the WebView take up full width
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                LinearLayout.LayoutParams.MATCH_PARENT,  // Match screen width
+                videoHeight  // Maintain 16:9 aspect ratio
         );
 
-        // Optional: Add margins if needed (in pixels)
-        int marginInDp = 16;  // Adjust if needed
+        int marginInDp = 8;  // Adjust margins as needed
         int marginInPx = (int) (marginInDp * getResources().getDisplayMetrics().density);
-        params.setMargins(marginInPx, 0, marginInPx, 30); // Apply margins
-
-        // Apply the layout params to the WebView
+        params.setMargins(marginInPx, marginInPx, marginInPx, marginInPx);
         webView.setLayoutParams(params);
 
-        // Randomly select one of the video embeds
-        String randomVideoEmbed = videoEmbeds[random.nextInt(videoEmbeds.length)];
+        // Load the HTML content into the WebView with responsive iframe style
+        String videoHtml = "<html><body style='margin:0;padding:0;'>" +
+                "<iframe width=\"100%\" height=\"100%\" style=\"aspect-ratio:16/9;\" src=\"" +
+                extractVideoSrc(videoEmbed) + "\" frameborder=\"0\" allowfullscreen></iframe>" +
+                "</body></html>";
 
-        // Ensure iframe fits the screen width using 100% width and maintains aspect ratio
-        String videoHtml = "<html><body style='margin:0;padding:0;'>"
-                + "<iframe width=\"100%\" height=\"auto\" style=\"aspect-ratio: 16/9;\""
-                + " src=\"" + extractVideoSrc(randomVideoEmbed) + "\""
-                + " frameborder=\"0\" allowfullscreen></iframe>"
-                + "</body></html>";
-
-        // Load the responsive HTML into the WebView
         webView.loadData(videoHtml, "text/html", "utf-8");
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebChromeClient(new WebChromeClient());
-
-        // Add the WebView to the container
         webviewContainer.addView(webView);
     }
 
-    // Helper method to extract the src from the embed code
+    // Helper method to extract the src URL from the embed code
     private String extractVideoSrc(String embedCode) {
         int start = embedCode.indexOf("src=\"") + 5;
         int end = embedCode.indexOf("\"", start);
@@ -218,6 +172,20 @@ public class Home extends AppCompatActivity {
     }
 
 
+    private void fetchHealthTip() {
+        // Fetch a health tip using GeminiAPIHelper
+        String prompt = "Provide a health tip in a single sentence.";
+        GeminiAPIHelper.fetchDataFromGemini(prompt, new GeminiAPIHelper.GeminiAPIResponse() {
+            @Override
+            public void onResult(String responseText) {
+                if (responseText != null) {
+                    healthTipText.setText(responseText); // Display the health tip
+                } else {
+                    healthTipText.setText("Stay healthy!"); // Fallback message
+                }
+            }
+        });
+    }
 
     private void setGreetingMessage() {
         String greeting;
@@ -232,7 +200,6 @@ public class Home extends AppCompatActivity {
             greeting = "Good Evening";
         }
 
-        // If the user is logged in, include their name in the greeting
         if (auth.getCurrentUser() != null) {
             greeting += "!";
         }

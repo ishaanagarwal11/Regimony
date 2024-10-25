@@ -15,6 +15,7 @@ firebaseAuth = "23.0.0"
 materialVersion = "1.6.0"
 mpandroidchart = "v3.1.0"
 playServicesAuth = "20.6.0"
+swiperefreshlayout = "1.1.0"
 
 [libraries]
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
@@ -31,6 +32,7 @@ material-v160 = { module = "com.google.android.material:material", version.ref =
 material-v190 = { module = "com.google.android.material:material", version.ref = "googleMaterial" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

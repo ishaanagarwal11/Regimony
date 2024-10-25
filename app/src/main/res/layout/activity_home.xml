@@ -22,7 +22,7 @@
         android:textColor="@color/colorPrimary"
         />
 
-    <!-- Health Tip of the Day TextView (Centered) -->
+    <!-- Health Tip TextView -->
     <TextView
         android:id="@+id/healthTipText"
         android:layout_width="wrap_content"
@@ -38,32 +38,31 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingBottom="20dp"
-
         />
-    <!-- ScrollView for infinite scrolling of WebViews -->
-    <ScrollView
-        android:id="@+id/scrollView"
+
+    <!-- ScrollView for YouTube video embeds -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@+id/healthTipText"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation">
 
-        <LinearLayout
-            android:id="@+id/webviewContainer"
+        <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <!-- Add some placeholder content or views to make the scrollable content visible -->
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/webviewContainer"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=" "
-                android:layout_marginTop="10dp"/>
-        </LinearLayout>
-    </ScrollView>
+                android:orientation="vertical"
+                android:padding="16dp">
+                <!-- The YouTube videos will be added programmatically here -->
+            </LinearLayout>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <!-- Bottom Navigation Bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
