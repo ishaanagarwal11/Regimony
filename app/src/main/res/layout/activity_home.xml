@@ -30,6 +30,7 @@
         android:text="Health Tip of the Day"
         android:textSize="20sp"
         android:textStyle="italic"
+        android:textAlignment="center"
         app:layout_constraintTop_toBottomOf="@+id/greetingText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
