@@ -1,2 +1,2 @@
 # Regimony
-Regimen in Harmony (VibeLife)
+Regimen in Harmony. Designed to integrate seamlessly into daily routines, keeping users accountable for their health and wellness goals. The app embodies the concept of a regimen in harmony, with a focus on balance, simplicity, and ease of use. By tracking daily steps and calculating key health metrics such as BMI, Regimony helps users stay on track with their physical activity and fitness objectives. Daily notifications, intuitive tracking features, and the harmonious integration of step counting and BMI monitoring make Regimony a comprehensive personal health tool.
